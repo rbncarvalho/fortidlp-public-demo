@@ -1,5 +1,7 @@
 # Matriz de resultados observados
 
+> **Dry run 29/10/2026:** todos os 11 percursos foram executados. Ver [relatório](operations/dry-run-2026-10-29.md) e [mapa de apresentação](presentation-flow.md).
+
 | UC | Condição | Observado | Evidência técnica principal | Lacuna |
 |---|---|---|---|---|
 | 01 | Download de ficheiro corporativo, renomeação e upload | Bloqueio inicial com override permitido | Data Lineage, `Block browser upload... Succeeded`, feedback, screenshot/file evidence | Teste `Cancel` independente desejável |
@@ -8,7 +10,7 @@
 | 04 | Paste para apps GenAI desktop | Deteção | App destino e padrão português | Sem bloqueio nativo de prompt por este template |
 | 05 | Email para destinatário externo com PII | Bloqueado | `Block outbound email — Succeeded` | MPIP de anexo-only não fez match |
 | 06 | Prompt ChatGPT Web com telefones PT | Bloqueado | `Block browser request — Succeeded`; input evidence | `website_user=unknown`; screenshot `Not Found` |
-| 07 | SaaS cloud pessoal com PII | Parcial | Outra policy detetou label em Google Drive | Não atribuir match à UC07 |
+| 07 | Google Drive com documento classificado e com documento só PII | Deteções próprias DEMO-07 confirmadas para MPIP e PII; bloqueio configurado e reteste reportado concluído | `Created by DEMO-07`, Content Inspection, ações de browser | Action Log final do bloqueio não partilhado; `Unknown` não prova conta pessoal |
 | 08 | Partilha cloud para conta externa com edição | Permissão reduzida via Teams | Contribute → Reader; `Cloud change permission — Succeeded` | Feature Preview e atraso de auditoria |
 | 09 | ChatGPT Desktop não aprovado | Terminado após arranque limpo | `Kill process — Succeeded` | Primeira tentativa falhou em PID transitório |
 | 10 | Thunderbird não aprovado | Terminado, redirecionado | Kill process + `ms-outlook:` | URI depende da instalação no endpoint |

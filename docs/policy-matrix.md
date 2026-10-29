@@ -10,7 +10,7 @@
 | 04 | `DEMO-04B | Sensitive Data Pasted to GenAI` | `Sensitive content pasted to desktop application` | Padrões PII PT + destinos desktop | Deteção; coaching |
 | 05 | `DEMO-05A | Personal Data Email Protection` | `Unauthorized email sent` | Destinatário externo + padrões PII / MPIP | Block outbound email; evidence; message |
 | 06 | `DEMO-06 | GenAI Prompt Protection` | `Sensitive content sent to GenAI web app` | GenAI apps + padrões PII PT | Block browser request; capture input; message |
-| 07 | `DEMO-07 | Personal Cloud Protection` | `Sensitive file uploaded` | Google Drive/Dropbox/OneDrive + Non-corporate | Ainda não validado neste filtro |
+| 07 | `DEMO-07 | Personal Cloud Protection` | `Sensitive file uploaded` | SaaS Apps Google Drive + `Non-corporate` **ou** `Unknown`; Content Inspection por PII/MPIP | Deteção validada para PII/MPIP, Block browser upload sem override configurado (ver Action Log) |
 | 08 | `DEMO-08 | Cloud Sharing Remediation` | `Sensitive file or folder shared with user on SharePoint or OneDrive` | Destinatário externo, scope no utilizador | `Change shared file access permission` → Reader via Teams |
 | 09 | `DEMO-09 | Unauthorized GenAI Desktop` | `Unauthorized application used` | `ChatGPT.exe` | Kill process + display message |
 | 10 | `DEMO-10 | Unauthorized Email Client` | `Unauthorized email tool used` | Outlook permitido / Thunderbird não autorizado | Kill process + message com URI `ms-outlook:` |

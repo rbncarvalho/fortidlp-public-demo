@@ -16,7 +16,7 @@ Repositório de referência para reproduzir uma PoC técnica de FortiDLP num amb
 | UC04 | Dados pessoais colados em aplicações GenAI desktop | Deteção e coaching em aplicações nativas | ✅ Deteção validada |
 | UC05 | Outbound Email DLP | Bloqueio de email externo com identificadores pessoais ou email classificado | ✅ Validado |
 | UC06 | GenAI Web Prompt Protection | Bloqueio de pedido ChatGPT Web; input evidence; popup | ✅ Validado |
-| UC07 | Cloud pessoal versus corporativa | Política configurada; diferenciação de identidade e enforcement não totalmente validados | ◐ Pendente |
+| UC07 | Proteção de upload SaaS (PII/MPIP) | Google Drive: deteções próprias por PII e MPIP; bloqueio configurado, reteste concluído pelo operador | ✅ Dry run; guardar Action Log final |
 | UC08 | Remediação OneDrive via Teams | Partilha com edição → notificação Teams → `Reader` | ✅ Validado |
 | UC09 | Bloqueio de ChatGPT Desktop | `Kill process` + coaching após arranque limpo | ✅ Validado |
 | UC10 | Cliente de email não autorizado | Thunderbird terminado; URI nativo abre New Outlook | ✅ Validado |
@@ -30,11 +30,20 @@ Repositório de referência para reproduzir uma PoC técnica de FortiDLP num amb
 
 **Label `dlp_rc_demos` no endpoint E no utilizador**; Policy Group `PG-FortiDLP-Demo`. Em especial, a remediação OneDrive/Teams (UC08) requer **scope no utilizador**. Cada use case terá uma vista operacional com fluxograma, pré-requisitos e resultados.
 
+## Dry run concluído — 29/10/2026
+
+**11 percursos executados.** A narrativa foi reorganizada na sequência **UC01 → UC02 (+ preparar UC08) → UC03 → UC04 → UC06 → UC09 → UC08 → UC05 → UC10 → UC07 → UC11**.
+
+**Começa aqui:** [Mapa visual da apresentação](docs/presentation-flow.md) e [ficheiro TXT para copiar/colar durante a demo](examples/live-demo-paste.txt). O [relatório do dry run](docs/operations/dry-run-2026-10-29.md) distingue ações verificadas de resultados reportados.
+
 ## Navegação
 
 - [Arquitetura, versões e pré-requisitos](docs/architecture.md)
 - [Catálogo detalhado de políticas (UC01–UC11)](docs/policy-matrix.md)
-- [Guião de apresentação — 35 a 45 minutos](docs/demo-script.md)
+- **[Mapa de apresentação: sequência testada + fluxograma](docs/presentation-flow.md)**
+- **[Ficheiro TXT com conteúdo para copiar/colar](examples/live-demo-paste.txt)**
+- [Guião detalhado — 35 a 45 minutos](docs/demo-script.md)
+- [Relatório do dry run de 29/10/2026](docs/operations/dry-run-2026-10-29.md)
 - [Runbook de preparação e execução](docs/operations/runbook.md)
 - [Troubleshooting / lições aprendidas](docs/operations/troubleshooting.md)
 - [Resultados e limitações](docs/test-results.md)

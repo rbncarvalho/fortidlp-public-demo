@@ -15,6 +15,14 @@
 - [ ] Deteções confirmadas para UC01, UC05, UC06, UC08, UC09, UC10 e UC11 abertas em separadores de backup.
 - [ ] Policies de debug antigas desativadas para evitar duplos popups.
 
+## Sequência que realmente funcionou
+
+`UC01 → UC02 (+ partilha prévia da UC08) → UC03 → UC04 → UC06 → UC09 → UC08 → UC05 → UC10 → UC07 → UC11`
+
+**Abrir ao lado:** [Mapa da apresentação](../presentation-flow.md) · [TXT para copiar/colar](../../examples/live-demo-paste.txt).
+
+**Pré-preparação UC08:** criar a partilha **durante a UC02** e deixar o conector ingerir o evento enquanto se mostra o bloco GenAI.
+
 ## Falhas a antecipar
 
 | UC | Falha típica | Verificação rápida |
@@ -25,7 +33,7 @@
 | 04 | Paste em app não abrangida | Application name na Detection |
 | 05 | Add-in ausente | New Outlook + Email Monitoring |
 | 06 | Prompt não bloqueado | Browser extension + `Block browser request` |
-| 07 | Conta `unknown` | Validar conta e policy específica; UC pendente |
+| 07 | Deteção sem ação ou evento por outra regra | Criar DOCX local com PII sem MPIP; validar `Created by DEMO-07`, tipos `Non-corporate + Unknown` e `Block browser upload` |
 | **08** | **Label só no endpoint** | **View scope do utilizador + FortiDLP Teams App** |
 | 09 | PID transitório | Fechar todos `ChatGPT.exe` e relançar |
 | 10 | Outlook não abre | Testar `ms-outlook:` |

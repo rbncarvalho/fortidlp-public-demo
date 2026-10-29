@@ -1,171 +1,108 @@
-# Guião para apresentação — FortiDLP
+# Guião de apresentação FortiDLP — sequência validada no dry run
 
-**Público:** equipas técnicas, segurança, IT e governação de dados.  
-**Duração recomendada:** 35–45 minutos.  
-**Linguagem:** portuguesa, com nomes de produtos e operações na designação original.  
-**Regra de ouro:** não executar funcionalidades não validadas como se estivessem garantidas.
+**Ambiente:** Windows 11 / FortiDLP Agent 12.8.1 / Policy Templates 8.7.0.  
+**Uso:** apresentação técnica de 35–45 min; adaptar tempos sem alterar o encadeamento.  
+**Mapa de uma página:** [presentation-flow.md](presentation-flow.md).  
+**Texto pronto a colar:** [live-demo-paste.txt](../examples/live-demo-paste.txt).  
+**Checklist:** [preflight.md](operations/preflight.md).
 
-## Sequência recomendada — dry run das 11 policies
+## A história — uma cadeia lógica
 
-Na apresentação, usar as cenas com melhor impacto e reduzir as opcionais conforme o tempo disponível. A **história GenAI é contínua: UC04 → UC06 → UC09**, sem trocar os dados de teste.
+```mermaid
+flowchart TD
+ A["UC01 Data Lineage"] --> B["UC02 Screenshot"]
+ B --> X["PREPARAR UC08: Share OneDrive Can Edit"]
+ X --> C["UC03 MPIP"]
+ C --> D["UC04 Claude Desktop: Detect"]
+ D --> E["UC06 ChatGPT Web: Block"]
+ E --> F["UC09 ChatGPT Desktop: Kill"]
+ F --> G["UC08 Teams: Reader"]
+ G --> H["UC05 Email Outlook: Block"]
+ H --> I["UC10 Thunderbird: Kill + abrir Outlook"]
+ I --> J["UC07 Google Drive: PII + Block"]
+ J --> K["UC11 Nmap: Detect"]
+ K --> L["Consola Investigate / Action Log"]
+```
 
-| Ordem | Use case | Mensagem / ação |
-|---|---|---|
-| 1 | UC01 | OneDrive → rename → upload → override auditável |
-| 2 | UC02 | Screenshot → Empty Clipboard |
-| 3 | UC03 | MPIP label → deteção browser |
-| 4 | UC04 | PII → paste em Claude Desktop: **deteção, não bloqueio** |
-| 5 | UC06 | **A mesma PII** → ChatGPT Web: **Block browser request** |
-| 6 | UC09 | ChatGPT Desktop não autorizado: **Kill process** |
-| 7 | UC05 | New Outlook: bloqueio de email com PII |
-| 8 | UC10 | Thunderbird: Kill + abrir Outlook nativo |
-| 9 | UC08 | OneDrive: partilha externa → Teams → Reader |
-| 10 | UC11 | Nmap autorizado: deteção de recon mais intenso |
+## 0. Preparação antes do público chegar (5 min)
 
-**UC07:** utilizar como teste opcional/pendente de SaaS pessoal; não anunciar um bloqueio específico ainda não validado.
+Confirmar Agent online, `dlp_rc_demos` no endpoint **e** utilizador, policies publicadas, browser monitoring, Microsoft 365/Teams integration, email add-in e aplicações. Preparar `https.docx`, `OnlyMPIP.docx`, `Ficha-Condutor.docx` e partilha `Cloud-Sharing-Demo.docx`.
 
-### Discurso de transição GenAI
+Abrir em separadores OneDrive, Google Drive de laboratório, ChatGPT Web, FortiDLP Console e Teams. Fechar instâncias antigas de ChatGPT Desktop. Ter pronto o [ficheiro TXT](../examples/live-demo-paste.txt) para copiar os blocos sem memorizar dados.
 
-> “Na aplicação nativa conseguimos identificar a tentativa de partilha e alertar, mas este controlo não bloqueia o conteúdo. Ao efetuar a mesma ação no browser, conseguimos impedir a submissão do prompt. E para reduzir a hipótese de contorno pelo cliente ChatGPT Desktop não autorizado, aplicamos Application Control e terminamos o processo.”
+## 1. UC01 — O dado conserva a origem (4 min)
 
-**Nota:** os mecanismos são *channel-specific*. A demo comprova bloqueio do pedido ChatGPT **Web** e término da aplicação **ChatGPT Desktop**; não comprova o bloqueio de todas as aplicações GenAI nativas.
+**Dizer:** “Um utilizador pode descarregar um documento corporativo, movê-lo e alterar o nome ou extensão. A proteção não deve depender do nome.”
 
-## Abertura
+**Mostrar:** OneDrive `https.docx` → Edge download → mover → renomear `sapo.jpg` → upload externo → popup com override justificado → Detection, MIME DOCX, Data Lineage e Action Log.
 
-**Dizer:** “Esta demonstração acompanha a informação através de vários canais: ficheiros locais e corporativos, email, aplicações desktop, GenAI e cloud. Vamos distinguir deteção, bloqueio, exceção e remediação, mostrando as ações efetivamente observadas.”
+**Conclusão:** *exceção autorizada e auditável*; não chamar “bloqueio definitivo” quando o utilizador continua.
 
-**Mostrar:** lista de policies ativas, endpoint saudável e conector cloud configurado, sem expor identidades reais.
+## 2. UC02 — Screenshot + iniciar o relógio da cloud (3 min)
 
-## Cena 1 — A origem continua a importar (UC01)
+**Dizer:** “Se não consegue retirar o ficheiro, pode tentar tirar uma captura do ecrã.”
 
-**Preparação:** DOCX de laboratório no OneDrive; acesso ao destino cloud externo; política com override.
+**Mostrar:** Word → `Win+Shift+S` → captura → popup → `Empty Clipboard` → Paint, colar sem sucesso.
 
-**Dizer:** “O utilizador descarrega um documento de um repositório corporativo, move-o e até altera a extensão. Será que a plataforma se lembra de onde veio?”
+**SEM PARAR A APRESENTAÇÃO:** ir ao OneDrive e **partilhar `Cloud-Sharing-Demo.docx` com um contacto externo de laboratório, com permissão Can edit**. Não esperar pelo Teams; avançar imediatamente. O evento deverá aparecer mais tarde.
 
-**Ao vivo:** download → rename `.docx` para `.jpg` → tentativa de upload → popup → escolher motivo e comentário → continuar.
+## 3. UC03 — MPIP na origem (2 min)
 
-**Mostrar SOC:** Detecção → Origin/Data Lineage → operações rename/move/copy; `Associated Actions`; motivo e screenshot.
+**Dizer:** “Além de padrões, reconhecemos a classificação existente no documento.”
 
-**Mensagem:** “Não estamos dependentes da extensão. A ação pode ser bloqueada ou permitida por exceção auditável.”
+**Mostrar:** `OnlyMPIP.docx` → label `PoC-HighlyConfidential` → upload Edge → deteção criada pela `DEMO-03`.
 
-**Plano B:** deteção previamente gerada e print anonimizado da lineage.
+**Conclusão:** classificação reconhecida e coaching; não prometer bloqueio da UC03 sem uma ação provada.
 
+## 4. UC04 → UC06 → UC09 — Três controlos GenAI (8 min)
 
-## Cena 2 — Captura de ecrã (UC02)
+**Dizer, no início:** “Vamos reutilizar os mesmos dados de laboratório em diferentes canais.”
 
-**Dizer:** “E quando alguém tenta contornar a transferência de ficheiro fazendo uma captura de ecrã?”
+**UC04:** copiar **BLOCO A** do [TXT](../examples/live-demo-paste.txt) para Word → copiar de Word para **Claude Desktop** → paste → popup → deteção `DEMO-04B`. **Não enviar.** “Na aplicação nativa, este template deteta, mas não bloqueia o conteúdo.”
 
-**Ao vivo:** abrir documento sintético → Snipping Tool → tentar colar após `Empty Clipboard`.
+**UC06:** abrir **ChatGPT Web no Edge** → colar **o mesmo BLOCO A** → Send → popup e bloqueio. Na consola: `Block browser request — Succeeded`, `Capture input evidence — Succeeded`. “No browser, impedimos a submissão.”
 
-**Mostrar SOC:** Screenshot event e ação de limpeza.
+**UC09:** fechar todas instâncias antigas ChatGPT.exe → abrir **ChatGPT Desktop** → observar término e popup. Na consola: `Kill process — Succeeded`. “A aplicação nativa não autorizada também pode ser terminada.” **Não extrapolar para todo o GenAI desktop.**
 
-**Mensagem:** “Visibilidade sobre operações do utilizador, não apenas uploads.”
+## 5. UC08 — Fechar a partilha do OneDrive via Teams (4 min)
 
+**Ponte:** “Enquanto protegíamos o endpoint, o evento de partilha foi ingerido na cloud.”
 
-## Cena 3 — Sensitivity Labels MPIP (UC03)
+**Mostrar:** Teams → mensagem FortiDLP sobre partilha com `Can edit` → utilizador clica botão de remediação → permissões passam a `Reader` no OneDrive → Cloud Action Log `Succeeded`.
 
-**Preparação:** documento sintético com label de laboratório aplicada no Word e policy `DEMO-03` ativa.
+**Plano B:** se não chegou a tempo, não bloquear a apresentação: continuar com UC05/10 e retomar no fecho.
 
-**Dizer:** “Além de padrões de dados pessoais, o endpoint reconhece classificações Microsoft Purview no documento.”
+## 6. UC05 → UC10 — Duas faces de proteção de email (6 min)
 
-**Ao vivo:** confirmar a label no Word → guardar e fechar → upload no Edge → abrir Detection e verificar o match da label.
+**UC05, dizer:** “O email corporativo também é um canal de saída sensível.” New Outlook com Email Add-in → assunto/corpo do [TXT](../examples/live-demo-paste.txt) → anexo `Ficha-Condutor.docx` com PII sintética → destinatário externo de laboratório → Send → `Block outbound email — Succeeded`.
 
-**Mensagem:** “Deteção e coaching confirmados; bloqueio do upload específico desta UC ainda não demonstrado.”
+**Ponte UC10:** “E se tentar usar um cliente de email que contorna a stack aprovada?” Abrir Thunderbird → popup e `Kill process` → clicar `Abrir Outlook corporativo` → New Outlook nativo via `ms-outlook:`.
 
+**Nota:** teste de MPIP **somente no anexo** do email, sem label na mensagem, não deu match anteriormente.
 
-## Cena 4 — GenAI Desktop: visibilidade sem bloqueio de paste (UC04)
+## 7. UC07 — Cloud storage sem sessão corporativa verificada (3 min)
 
-**Preparação:** texto PII sintético em Word; Claude Desktop aberto; policy `DEMO-04B` ativa.
+Criar documento **novo e local** `Cloud-PII-Local.docx` com conteúdo do [TXT](../examples/live-demo-paste.txt), sem label MPIP e sem origem OneDrive; Google Drive de laboratório, upload. `DEMO-07` deve fazer match por **PII**, com `Non-corporate + Unknown`; apresentar `Block browser upload` e verificar Action Log.
 
-**Dizer:** “Ao colar informação sensível numa aplicação GenAI nativa, conseguimos detetar e alertar. Porém, este template não impede o envio do conteúdo. E se o colaborador fizer o mesmo no browser?”
+**Mensagem:** “Podemos agir contra dados sensíveis enviados para sessões que não foram identificadas como corporativas. `Unknown` não equivale a ter reconhecido uma conta pessoal.”
 
-**Ao vivo:** copiar PII sintética de Word → colar em Claude Desktop **sem submeter** → confirmar popup e deteção da aplicação nativa.
+**Detalhe de validação:** o dry run confirmou as deteções PII e MPIP e o operador reportou bloqueio concluído; a captura `Block browser upload — Succeeded` do último reteste não foi partilhada nesta conversa. Confirmá-la antes da sessão externa.
 
-**Ponte:** “Vamos usar exatamente os mesmos dados no ChatGPT Web e verificar se conseguimos impedir o pedido.”
+## 8. UC11 — Reconhecimento de rede (2 min)
 
+**Dizer:** “Para além de exfiltração, a plataforma observa comportamentos de risco no endpoint.”
 
-## Cena 5 — Dados pessoais para GenAI Web (UC06)
+Abrir deteção de scan de rede **autorizado** já recolhida. Mostrar `Created by DEMO-11`, `num_ports` e `remoteAddr`. Não executar novo scan extenso a serviços públicos sem autorização. **Deteção, não Kill nem Isolate.**
 
-**Dizer:** “Vimos que no cliente nativo este template deteta mas não bloqueia o paste. No browser, com uma policy específica de GenAI, podemos impedir o envio do mesmo conteúdo.”
+## 9. Encerramento — Investigate (3 min)
 
-**Ao vivo:** prompt neutro (passa) → prompt com telefones fictícios (bloqueado) → popup → deteção com `Capture input evidence`.
+Mostrar em sequência: **UC01** (linhagem + override) → **UC06** (bloqueio efetivo + input evidence) → **UC08** (correção de permissões na fonte via Teams).
 
-**Mostrar SOC:** `Block browser request — Succeeded`, `Capture input evidence — Succeeded`.  
-**Não mostrar:** conteúdo original de evidência se incluir identidades ou dados reais.
+**Fecho:** “Não é apenas gerar alertas: é identificar a origem da informação, aplicar prevenção nos canais suportados, auditar exceções e corrigir exposição diretamente no serviço cloud.”
 
-**Mensagem:** “`Block browser request — Succeeded` prova que este pedido Web foi impedido. Segue-se a demonstração de como podemos limitar o acesso pela app nativa.”
+## Considerações de precisão
 
-
-## Cena 6 — Aplicação GenAI não autorizada (UC09)
-
-**Dizer:** “O canal Web pode estar protegido, mas a app desktop tem outra superfície de controlo. Quando a política não permite essa aplicação, podemos terminá-la.”
-
-**Ao vivo:** arranque **limpo** de ChatGPT Desktop; popup e término automático.
-
-**Mostrar SOC:** `Kill process — Succeeded`.
-
-**Mensagem:** “A prevenção de exfiltração aqui resulta da combinação dos controlos: pedido bloqueado no browser e ChatGPT Desktop não autorizado terminado no endpoint. Isto não significa cobertura universal de todas as apps GenAI (por exemplo, Claude Desktop apenas gerou deteção de paste neste laboratório).”
-
-
-## Cena 7 — Email não autorizado (UC05)
-
-**Dizer:** “Uma mensagem enviada pelo cliente corporativo pode conter dados pessoais ou estar classificada. O destino também importa.”
-
-**Ao vivo:** New Outlook → destinatário externo de teste → documento sintético com padrões de conteúdo → Send.
-
-**Mostrar SOC:** `Block outbound email — Succeeded`. Se relevante, repetir com classificação no **email**, não apenas no ficheiro.
-
-**Mensagem:** “Combinação de destinatário, conteúdo e classificação.”
-
-
-## Cena 8 — Cliente de email alternativo (UC10)
-
-**Dizer:** “Não basta controlar mensagens no Outlook se o colaborador instalar um cliente de email fora dos mecanismos aprovados.”
-
-**Ao vivo:** lançar Thunderbird → popup → Kill → clicar `Abrir Outlook corporativo` → abre New Outlook nativo.
-
-**Mensagem:** “Prevenção com uma alternativa imediatamente acessível.”
-
-
-## Cena 9 — Partilha cloud e remediação no Teams (UC08)
-
-**Preparação crítica:** criar a partilha com **antecedência**, por causa da latência de ingestão (cerca de 3 minutos num teste). Confirmar que o utilizador recebeu a mensagem.
-
-**Dizer:** “A informação pode ficar exposta sem sair do Microsoft 365. Vamos corrigir uma permissão excessiva no serviço cloud.”
-
-**Ao vivo:** consultar partilha `Can edit` → mensagem FortiDLP no Teams → clicar botão de alteração → OneDrive `Manage access` → confirmar `Can view`.
-
-**Mostrar SOC:** `Cloud change permission — Succeeded`, destino `READER`.
-
-**Mensagem:** “Detetar na cloud, envolver o utilizador e corrigir na própria fonte, sem depender da máquina usada para criar a partilha.”
-
-**Plano B:** detecção e Action Log já gerados, com prints devidamente anonimizados.
-
-
-## Cena 10 — Reconhecimento excessivo de rede (UC11)
-
-**Dizer:** “Nem toda a utilização de ferramentas técnicas é maliciosa. A política permite identificar excesso de atividade, mas não contamos simplesmente quantas vezes alguém executou o Nmap.”
-
-**Ao vivo:** de preferência **não** efetuar scan intensivo durante a apresentação; mostrar os eventos preparados com o alvo autorizado. Se optar por scan, respeitar o âmbito escrito de autorização.
-
-**Mostrar SOC:** `num_ports`, endereço de destino de laboratório e janela de avaliação.
-
-**Mensagem:** “Análise de comportamento e limites definidos por política; não foi demonstrado Kill nem isolamento.”
-
-## Encerramento — Investigate / Forensics
-
-Revisitar UC01, UC06 e UC08. Mostrar separadamente:
-- **Data Lineage** (a origem e operações);
-- **Associated Actions** (concluídas, falhadas e pendentes);
-- **User feedback / override**;
-- **Remediação Teams**, confirmada no serviço cloud.
-
-**Dizer:** “O ponto central não é um popup isolado: é termos rastreabilidade, contexto de risco, ação e evidência de auditoria.”
-
-## Material que deve estar preparado
-
-- Documento com **dados integralmente sintéticos**.
-- Contas pessoal/corporativa estritamente de laboratório.
-- FortiDLP Agent atualizado, Teams App instalada e âmbito cloud correto.
-- Uma deteção **bem-sucedida** pronta para cada passo, caso haja latência ou falha de demo.
-- Screenshots anonimizados, verificados segundo [publication-safety](publication-safety.md).
+- As políticas GenAI têm cobertura e ações **diferentes** para native e Web; não alegar proteção absoluta de todas as aplicações.
+- UC03 mostra classificação, UC04 mostra deteção e UC11 mostra comportamento; não lhes atribuir bloqueios não testados.
+- UC07 usa `Non-corporate + Unknown`; o último reteste da ação deverá estar no Action Log privado.
+- Todos os dados e contas são de laboratório; não divulgar evidências originais em repositório público.

@@ -1,0 +1,221 @@
+FORTIDLP — GUIA DE COPY/PASTE AO VIVO
+Dry run 29/10/2026 • Lab Windows 11 / Agent 12.8.1
+====================================================
+
+USO: este ficheiro acompanha a ordem REAL da apresentação.
+Copiar APENAS as linhas entre "INÍCIO" e "FIM" de cada bloco.
+NÃO utilizar dados pessoais reais nem enviar para serviços externos
+informação que não esteja autorizada como material de laboratório.
+
+Este cenário usa o mesmo texto sintético que foi testado na PoC.
+Números e nome abaixo são fictícios; verificar que continuam seguros
+para o tenant de teste antes de utilizar ou publicar novas evidências.
+
+PRÉ-CHECK (antes de começar)
+---------------------------
+[ ] Endpoint e utilizador com label dlp_rc_demos
+[ ] Policy Group PG-FortiDLP-Demo ativo
+[ ] Word + Edge + Snipping Tool + OneDrive + Google Drive
+[ ] Claude Desktop + ChatGPT Desktop + New Outlook + Email Add-in
+[ ] Thunderbird + Nmap
+[ ] SharePoint/OneDrive Connector + app FortiDLP no Teams
+[ ] Ficheiros de teste prontos: https.docx, OnlyMPIP.docx,
+    Ficha-Condutor.docx, Cloud-Sharing-Demo.docx
+
+====================================================
+01 | DATA LINEAGE — sem texto para colar
+====================================================
+OneDrive corporativo:
+  Ficheiro de origem: https.docx
+  Download com Edge → mover para outra pasta → rename: sapo.jpg
+Google Drive de laboratório:
+  Tentar upload de sapo.jpg
+FortiDLP:
+  Confirmar popup e optar por override COM JUSTIFICAÇÃO.
+
+INÍCIO — comentário de override
+Demonstração autorizada de exceção DLP em ambiente de laboratório.
+FIM — comentário de override
+
+Esperado: linhagem + MIME original DOCX + Block com user override.
+Atenção: override permite a transferência, não é bloqueio absoluto.
+
+====================================================
+02 | SCREENSHOT — Word + Snipping Tool
+====================================================
+No Word abrir Ficha-Condutor.docx (ou documento fictício).
+Win+Shift+S → capturar dados visíveis → aceitar popup → tentar
+Ctrl+V no Paint.
+Esperado: deteção + Empty Clipboard Succeeded.
+
+*** FAZER AQUI, EM PARALELO, A PREPARAÇÃO DA UC08 ***
+No OneDrive corporativo partilhar "Cloud-Sharing-Demo.docx"
+com um destinatário EXTERNO controlado pelo laboratório.
+Conceder "Can edit" / Contribute.
+NÃO ESPERAR PELO TEAMS. Continuar já para UC03.
+====================================================
+
+03 | CLASSIFICAÇÃO MPIP — sem texto para colar
+====================================================
+Word: OnlyMPIP.docx
+Sensitivity Label: PoC-HighlyConfidential
+Guardar/fechar → tentar upload no Edge → Detection DEMO-03.
+Esperado: reconhecimento MPIP e coaching.
+NÃO afirmar Block browser upload se não houver Action Log.
+
+====================================================
+04 | CLAUDE DESKTOP — COPIAR BLOCO A DO WORD
+====================================================
+No Word selecionar o texto abaixo e Ctrl+C.
+Depois colar (Ctrl+V) no Claude Desktop.
+NÃO é preciso clicar em Send.
+
+INÍCIO — BLOCO A / DOCUMENTO ADMINISTRATIVO FICTÍCIO
+Analisa este processo fictício e prepara um resumo administrativo:
+
+Nome: João Teste da Silva
+NIF: 245813769
+Telemóvel: 912345678
+Telefone: 213456789
+Número de documento: L-1234567
+Morada: Rua dos Ensaios, 25, Lisboa
+
+Identifica os dados pessoais e organiza-os numa tabela.
+FIM — BLOCO A
+
+Esperado: Detection DEMO-04B + claude.exe + conteúdo PII.
+Mensagem ao público:
+"Na aplicação nativa detetamos e alertamos, mas este template
+não bloqueia a submissão do prompt."
+
+====================================================
+06 | CHATGPT WEB — COLAR EXATAMENTE O MESMO BLOCO A
+====================================================
+Abrir https://chatgpt.com no Edge.
+Copiar o BLOCO A (UC04) para a caixa de prompt.
+Clicar Send. O mesmo conteúdo deve ser bloqueado.
+
+INÍCIO — BLOCO A / REPETIDO PARA COPIAR SEM VOLTAR ATRÁS
+Analisa este processo fictício e prepara um resumo administrativo:
+
+Nome: João Teste da Silva
+NIF: 245813769
+Telemóvel: 912345678
+Telefone: 213456789
+Número de documento: L-1234567
+Morada: Rua dos Ensaios, 25, Lisboa
+
+Identifica os dados pessoais e organiza-os numa tabela.
+FIM — BLOCO A
+
+Esperado: DEMO-06; Block browser request Succeeded;
+Capture input evidence Succeeded; Display message Succeeded.
+O screenshot evidence foi Not Found num teste anterior.
+Mensagem:
+"No browser o envio é efetivamente impedido pelo controlo
+específico de GenAI."
+
+====================================================
+09 | CHATGPT DESKTOP — sem texto para colar
+====================================================
+Fechar todas as instâncias ChatGPT.exe existentes.
+Abrir ChatGPT Desktop.
+Esperado: popup + Kill process Succeeded.
+Mensagem:
+"Para reduzir o bypass através do cliente ChatGPT Desktop,
+terminamos a aplicação não autorizada."
+NOTA: isto NÃO bloqueia universalmente todas as apps nativas.
+
+====================================================
+08 | ONE DRIVE + TEAMS — REMEDIAÇÃO PREPARADA NA UC02
+====================================================
+Abrir Teams → mensagem interativa FortiDLP sobre a partilha.
+Clicar botão de remediação para alterar a permissão.
+Confirmar OneDrive "Manage access": Can edit → Can view/Reader.
+Esperado: Cloud action Succeeded.
+Se a mensagem ainda não chegou, não ficar à espera; regressar
+depois da UC10.
+
+====================================================
+05 | EMAIL DLP — NEW OUTLOOK
+====================================================
+Para: conta Gmail EXTERNA de laboratório (não escrever endereço
+real no repositório)
+Assunto:
+
+INÍCIO — ASSUNTO
+Teste de envio de documentação - Demo DLP
+FIM — ASSUNTO
+
+Corpo:
+
+INÍCIO — CORPO EMAIL
+Bom dia,
+
+Partilho em anexo uma ficha administrativa fictícia para teste
+de políticas de proteção de dados.
+
+O anexo contém apenas dados sintéticos do laboratório.
+
+Cumprimentos,
+Equipa de Testes
+FIM — CORPO EMAIL
+
+Anexo: Ficha-Condutor.docx (PII fictícia de laboratório).
+Clicar Send. Esperado: Block outbound email Succeeded.
+NOTA: MPIP apenas no anexo sem label no email NÃO foi validado.
+
+====================================================
+10 | THUNDERBIRD — sem texto para colar
+====================================================
+Thunderbird fechado → abrir Thunderbird.
+Esperado: Kill process + popup.
+Clicar botão "Abrir Outlook corporativo" (ms-outlook:).
+Esperado: abre New Outlook nativo.
+
+====================================================
+07 | GOOGLE DRIVE PESSOAL / CONTA NÃO IDENTIFICADA
+====================================================
+Criar no Word um documento NOVO e LOCAL, sem label MPIP.
+Nome: Cloud-PII-Local.docx
+NÃO descarregar este ficheiro do OneDrive (evitar DEMO-01).
+
+INÍCIO — CONTEÚDO DO DOCX LOCAL
+Ficha administrativa fictícia — apenas para testes DLP.
+
+Nome: João Teste da Silva
+NIF: 245813769
+Telemóvel: 912345678
+Telefone: 213456789
+Número de documento: L-1234567
+Morada: Rua dos Ensaios, 25, Lisboa
+
+Este ficheiro contém dados exclusivamente sintéticos.
+FIM — CONTEÚDO DO DOCX LOCAL
+
+Guardar/fechar o Word.
+Edge → Google Drive de laboratório → tentar upload.
+Esperado: Created by DEMO-07 + PII no Content Inspection;
+Block browser upload Succeeded (confirmar Action Log e Drive).
+Policy: Non-corporate + Unknown, sem user override.
+NÃO dizer "conta pessoal reconhecida" se website_user=Unknown.
+
+====================================================
+11 | NMAP — sem texto para colar
+====================================================
+Mostrar a deteção DEMO-11 já existente para um scan autorizado.
+Confirmar num_ports + remoteAddr + popup.
+Se for necessário repetir, apenas contra destino expressamente
+autorizado, respeitando os limites e as políticas de teste.
+Esperado: DETEÇÃO DE RECONHECIMENTO; não Kill nem Isolate.
+
+====================================================
+FECHO | INVESTIGATE — mostrar 3 ecrãs
+====================================================
+1) DEMO-01: Data Lineage + override com justificação.
+2) DEMO-06: Block browser request Succeeded + input evidence.
+3) DEMO-08: Teams remediation + Reader + Action Log.
+
+Mensagem final:
+"Visibilidade sobre os dados, prevenção quando suportada,
+exceções auditáveis e remediação diretamente no serviço cloud."

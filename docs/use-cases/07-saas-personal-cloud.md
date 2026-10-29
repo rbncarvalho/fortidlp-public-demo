@@ -1,70 +1,49 @@
-# UC07 — Upload para SaaS pessoal
+# UC07 — Upload para Google Drive com PII/MPIP
 
-> **GUIÃO RÁPIDO:** preparação + fluxograma + resultado. [Setup completo](../setup/README.md) · [Checklist 5 min](../operations/preflight.md)
+> [Guia rápido de preparação](../setup/README.md) · [Mapa da apresentação](../presentation-flow.md) · [TXT pronto a colar](../../examples/live-demo-paste.txt)
+
+## Estado do dry run
+
+**Deteção validada da própria `DEMO-07` para MPIP e para PII sem MPIP.** Configuração de bloqueio sem override aplicada; último reteste reportado como concluído. Verificar `Block browser upload — Succeeded` no Action Log privado antes de afirmar bloqueio comprovado na sessão com público.
 
 ## 0. Preparação rápida
 
 | Item | Verificar |
 |---|---|
-| Aplicações | Edge/Chrome + Google Drive pessoal e sessão corporativa de teste |
-| Label / scope | Endpoint `dlp_rc_demos` |
-| Policy Enabled | `DEMO-07 | Personal Cloud Protection` |
+| Aplicações | Edge/Chrome, Word, Google Drive **de laboratório** |
+| Agent | Windows 11, FortiDLP 12.8.1 online |
+| Scope | `dlp_rc_demos` no endpoint |
+| Policy | `DEMO-07 | Personal Cloud Protection`, `Sensitive file uploaded` |
+| SaaS | Google Drive, seleção de tipo `Non-corporate` **e** `Unknown` |
+| Content Inspection | Padrões PII portugueses **ou** label MPIP do laboratório |
+| Ações | `Block browser upload` ON, `Allow user override` OFF, Display Message ON |
+| Documento | **NOVO DOCX LOCAL**, conteúdo PII do TXT, **sem MPIP** e sem linhagem OneDrive |
 
-- [ ] Domínios de login corporativos configurados no FortiDLP
-- [ ] Contas pessoal/corporativa do **laboratório** separadas
-- [ ] Policy com SaaS App + account type Non-corporate
-
-## 1. Fluxograma — executar pela ordem indicada
+## 1. Fluxograma
 
 ```mermaid
 flowchart TD
-  A["Entrar em conta cloud pessoal"]
-  B["Selecionar DOCX com PII"]
-  C["Tentar upload"]
-  D["FortiDLP avalia app + conta"]
-  E["Verificar policy que disparou"]
-  F["Confirmar account type e ação"]
-  A --> B
-  B --> C
-  C --> D
-  D --> E
-  E --> F
+ A["Criar DOCX local com PII, sem MPIP"] --> B["Edge: Google Drive de laboratório"]
+ B --> C["Tentar upload"]
+ C --> D{"DEMO-07 gera Detection?"}
+ D -- "Não" --> X["Rever Content Inspection, account type e scope"]
+ D -- "Sim" --> E["Ver PII no Content Inspection"]
+ E --> F{"Block browser upload Succeeded?"}
+ F -- "Não ou ausente" --> Y["Verificar Actions, publicar policy e retestar"]
+ F -- "Sim" --> G["Confirmar ficheiro ausente no Drive"]
+ G --> H["Mostrar Detection e Action Log"]
 ```
 
-## 2. O que comprovar na consola
+## 2. Resultado observado
 
-**Pendente:** identidade Non-corporate e enforcement próprio da UC07 não foram confirmados. Não confundir deteções UC01/UC03.
+- Evento `Browser Events` de upload para `drive.google.com` observado; **não** exige Google Drive Connector.
+- Detection `DEMO-07` por documento **MPIP** em paralelo com UC03.
+- Detection separada `DEMO-07` por documento com **PII portuguesa sem MPIP**.
+- Foram ativados `Non-corporate + Unknown` e `Block browser upload` sem override.
+- O operador reportou reteste concluído, mas a captura do último `Action Log` não foi fornecida.
 
-## 3. Plano B
+## 3. Notas importantes
 
-Explicar configurações e apresentar a limitação sem atribuir deteções de outra policy.
+`website_user=Unknown` indica que a identidade da sessão SaaS **não foi identificada**; não comprova uma conta pessoal. Um `upload` nos Browser Events é atividade observada e não comprova por si só transferência permitida ou bloqueada. Usar o Action Log e confirmar o estado final no Google Drive.
 
----
-
-## Detalhe técnico e evidências
-
-**Estado:** **Pendente** (diferenciação de conta e enforcement não confirmados).
-
-## Política e condições
-`Sensitive file uploaded` → SaaS Apps no **destino** (não *File Origin*) → tipos de conta `Non-corporate`. Apps alvo: Google Drive, Dropbox, OneDrive.
-
-## Ações
-`Block browser upload` pretendido; não declarado como validado.
-
-## Reproduzir no laboratório
-1. Configurar domínios corporativos com base nos domínios de **email de login**, não em URLs SharePoint.
-2. Selecionar aplicação SaaS e `Non-corporate`.
-3. Testar upload de DOCX com PII para conta pessoal; repetir com ficheiro inofensivo.
-4. Testar upload corporativo autorizado e comparar deteções.
-
-## Resultado observado
-Foi observado upload de ficheiro com label MPIP para Google Drive, mas a deteção tinha origem noutra policy genérica. **Não prova** que UC07 esteja a fazer match.
-
-## Limitações e notas
-Uma aplicação com estado `Sanctioned` não implica que a sessão use conta corporativa. Identidade SaaS `Unknown` deve ser analisada separadamente.
-
-## Evidências a recolher (privadamente)
-- Policy / template e versão, com scope aplicável.
-- Timestamp, endpoint/utilizador fictício e evento que originou a deteção.
-- `Associated actions`, respetivos estados e `Action log`.
-- Apenas prints **redigidos/anonimizados**, sem emails reais, URL com tokens, paths de perfil, IDs de tenant ou conteúdo pessoal.
+**Plano B:** mostrar detecções próprias DEMO-07 por MPIP e PII; nunca atribuir a esta UC uma deteção gerada apenas por UC03.
