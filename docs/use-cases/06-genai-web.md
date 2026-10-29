@@ -14,6 +14,8 @@
 - [ ] Browser Monitoring e extensão Edge ON
 - [ ] Prompts neutro e PII sintética preparados
 
+**Transição:** fazer imediatamente após [UC04 — Clipboard em GenAI Desktop](04-clipboard-genai-desktop.md), reutilizando **o mesmo texto sintético**. Depois executar [UC09 — Terminar ChatGPT Desktop](09-chatgpt-desktop-control.md).
+
 ## 1. Fluxograma — executar pela ordem indicada
 
 ```mermaid
