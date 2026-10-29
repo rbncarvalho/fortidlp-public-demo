@@ -1,0 +1,30 @@
+# Secrets and credentials
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+*credentials*
+*secret*
+# Raw forensic evidence, captures and local screenshots
+raw-evidence/
+captures/
+screenshots-private/
+*.pcap
+*.pcapng
+*.har
+*.etl
+*.evtx
+*.zip
+# Editor and OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+__pycache__/
+*.pyc
