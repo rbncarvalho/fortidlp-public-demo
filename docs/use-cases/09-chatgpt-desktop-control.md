@@ -14,6 +14,8 @@
 - [ ] Unauthorized application used filtra binário ChatGPT.exe
 - [ ] Fechar **todos** processos ChatGPT.exe antigos
 
+**Transição:** apresentar logo após [UC06 — GenAI Web](06-genai-web.md). No Web, bloquear o prompt; na app ChatGPT Desktop, terminar a aplicação não autorizada. Não assumir cobertura de outras aplicações.
+
 ## 1. Fluxograma — executar pela ordem indicada
 
 ```mermaid
