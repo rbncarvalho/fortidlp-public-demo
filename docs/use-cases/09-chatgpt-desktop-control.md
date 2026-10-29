@@ -1,5 +1,50 @@
 # UC09 — Controlo de ChatGPT Desktop
 
+> **GUIÃO RÁPIDO:** preparação + fluxograma + resultado. [Setup completo](../setup/README.md) · [Checklist 5 min](../operations/preflight.md)
+
+## 0. Preparação rápida
+
+| Item | Verificar |
+|---|---|
+| Aplicações | ChatGPT Desktop para Windows (`ChatGPT.exe`) |
+| Label / scope | Endpoint `dlp_rc_demos` |
+| Policy Enabled | `DEMO-09 | Unauthorized GenAI Desktop` |
+
+- [ ] ChatGPT Desktop instalado
+- [ ] Unauthorized application used filtra binário ChatGPT.exe
+- [ ] Fechar **todos** processos ChatGPT.exe antigos
+
+## 1. Fluxograma — executar pela ordem indicada
+
+```mermaid
+flowchart TD
+  A["Fechar processos antigos"]
+  B["Abrir ChatGPT Desktop"]
+  C["FortiDLP deteta app"]
+  D["Exibe popup"]
+  E["Kill process"]
+  F["Confirmar app terminou"]
+  G["Action Log Succeeded"]
+  A --> B
+  B --> C
+  C --> D
+  D --> E
+  E --> F
+  F --> G
+```
+
+## 2. O que comprovar na consola
+
+`Kill process — Succeeded` após arranque limpo. O primeiro teste falhou num PID transitório.
+
+## 3. Plano B
+
+Fechar processos e relançar; se falhar de novo, mostrar Detection bem-sucedida anterior.
+
+---
+
+## Detalhe técnico e evidências
+
 **Estado:** **Validado após arranque limpo**.
 
 ## Política e condições

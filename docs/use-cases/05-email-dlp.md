@@ -1,5 +1,50 @@
 # UC05 — Proteção de email no New Outlook
 
+> **GUIÃO RÁPIDO:** preparação + fluxograma + resultado. [Setup completo](../setup/README.md) · [Checklist 5 min](../operations/preflight.md)
+
+## 0. Preparação rápida
+
+| Item | Verificar |
+|---|---|
+| Aplicações | New Outlook, FortiDLP Email Add-in e M365 |
+| Label / scope | Endpoint `dlp_rc_demos` |
+| Policy Enabled | `DEMO-05A | Personal Data Email Protection` |
+
+- [ ] Email Monitoring ON; Add-in New Outlook operacional
+- [ ] Mailbox de lab e destinatário externo controlado
+- [ ] DOCX com PII sintético pronto
+
+## 1. Fluxograma — executar pela ordem indicada
+
+```mermaid
+flowchart TD
+  A["Abrir New Outlook"]
+  B["Criar email externo"]
+  C["Anexar DOCX com PII"]
+  D["Clicar Send"]
+  E["FortiDLP inspeciona"]
+  F["Block outbound email"]
+  G["Action Log Succeeded"]
+  A --> B
+  B --> C
+  C --> D
+  D --> E
+  E --> F
+  F --> G
+```
+
+## 2. O que comprovar na consola
+
+`Block outbound email — Succeeded` para PII. A label **no email** também bloqueou; MPIP **apenas no anexo** não bloqueou no teste.
+
+## 3. Plano B
+
+Abrir Action Log de email PII bloqueado; evitar demonstração de MPIP no anexo-only como se fosse suportada.
+
+---
+
+## Detalhe técnico e evidências
+
 **Estado:** **Validado para dois percursos de bloqueio**.
 
 ## Política e condições

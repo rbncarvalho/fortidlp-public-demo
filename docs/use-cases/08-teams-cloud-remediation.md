@@ -1,5 +1,52 @@
 # UC08 — Correção de partilha OneDrive via Teams
 
+> **GUIÃO RÁPIDO:** preparação + fluxograma + resultado. [Setup completo](../setup/README.md) · [Checklist 5 min](../operations/preflight.md)
+
+## 0. Preparação rápida
+
+| Item | Verificar |
+|---|---|
+| Aplicações | OneDrive/SharePoint Connector + Teams + FortiDLP app dentro do Teams |
+| Label / scope | **Utilizador `dlp_rc_demos`** (e endpoint para restantes UC) |
+| Policy Enabled | `DEMO-08 | Cloud Sharing Remediation` |
+
+- [ ] Microsoft 365 Cloud Connector e Teams integration Healthy
+- [ ] **App FortiDLP instalada no Teams do utilizador** e label no user
+- [ ] Ficheiro partilhável, destinatário externo de lab e ~3 min para ingestão
+
+## 1. Fluxograma — executar pela ordem indicada
+
+```mermaid
+flowchart TD
+  A["Partilhar OneDrive com externo"]
+  B["Permissão Can edit"]
+  C["Cloud Connector ingere evento"]
+  D["UC08 gera Detection"]
+  E["Teams envia ação"]
+  F["Utilizador clica no botão"]
+  G["Permissão passa a Reader"]
+  H["Confirmar OneDrive + Action Log"]
+  A --> B
+  B --> C
+  C --> D
+  D --> E
+  E --> F
+  F --> G
+  G --> H
+```
+
+## 2. O que comprovar na consola
+
+Partilha `Contribute/Can edit` → `READER/Can view`; `Cloud change permission — Succeeded` após clique no Teams.
+
+## 3. Plano B
+
+Preparar partilha antes da apresentação e abrir deteção/Teams já registados se houver atraso.
+
+---
+
+## Detalhe técnico e evidências
+
 **Estado:** **Validado de ponta a ponta**.
 
 ## Política e condições

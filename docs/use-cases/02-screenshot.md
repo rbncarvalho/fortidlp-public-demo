@@ -1,5 +1,50 @@
 # UC02 — Screenshot e limpeza do clipboard
 
+> **GUIÃO RÁPIDO:** preparação + fluxograma + resultado. [Setup completo](../setup/README.md) · [Checklist 5 min](../operations/preflight.md)
+
+## 0. Preparação rápida
+
+| Item | Verificar |
+|---|---|
+| Aplicações | Word e Snipping Tool |
+| Label / scope | Endpoint `dlp_rc_demos` |
+| Policy Enabled | `DEMO-02 | Corporate Screenshot Protection` |
+
+- [ ] DOCX sintético aberto no Word
+- [ ] Screenshot e Clipboard Monitoring ON
+- [ ] Display Message e Empty Clipboard ativos
+
+## 1. Fluxograma — executar pela ordem indicada
+
+```mermaid
+flowchart TD
+  A["Abrir DOCX"]
+  B["Capturar com Snipping Tool"]
+  C["FortiDLP deteta screenshot"]
+  D["Mostrar popup"]
+  E["Empty Clipboard"]
+  F["Tentar colar"]
+  G["Confirmar Action Log"]
+  A --> B
+  B --> C
+  C --> D
+  D --> E
+  E --> F
+  F --> G
+```
+
+## 2. O que comprovar na consola
+
+Deteção de screenshot, mensagem e `Empty Clipboard` concluído.
+
+## 3. Plano B
+
+Mostrar Detection de backup; evitar regras duplicadas capture/save.
+
+---
+
+## Detalhe técnico e evidências
+
 **Estado:** **Validado** (deteção e `Empty Clipboard`).
 
 ## Política e condições

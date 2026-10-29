@@ -1,5 +1,50 @@
 # UC10 — Thunderbird e redirecionamento para Outlook
 
+> **GUIÃO RÁPIDO:** preparação + fluxograma + resultado. [Setup completo](../setup/README.md) · [Checklist 5 min](../operations/preflight.md)
+
+## 0. Preparação rápida
+
+| Item | Verificar |
+|---|---|
+| Aplicações | Thunderbird + New Outlook nativo |
+| Label / scope | Endpoint `dlp_rc_demos` |
+| Policy Enabled | `DEMO-10 | Unauthorized Email Client` |
+
+- [ ] Thunderbird instalado como cliente não autorizado
+- [ ] New Outlook instalado; `ms-outlook:` testado com `Start-Process`
+- [ ] Policy Unauthorized email tool used com Kill + Message
+
+## 1. Fluxograma — executar pela ordem indicada
+
+```mermaid
+flowchart TD
+  A["Validar URI ms-outlook"]
+  B["Abrir Thunderbird"]
+  C["FortiDLP deteta cliente"]
+  D["Kill process + popup"]
+  E["Clicar Abrir Outlook"]
+  F["New Outlook nativo abre"]
+  G["Validar Detection"]
+  A --> B
+  B --> C
+  C --> D
+  D --> E
+  E --> F
+  F --> G
+```
+
+## 2. O que comprovar na consola
+
+Thunderbird terminado e `ms-outlook:` abriu o New Outlook nativo.
+
+## 3. Plano B
+
+Se URI não abrir, usar fallback Web Outlook e mostrar Kill bem-sucedido anterior.
+
+---
+
+## Detalhe técnico e evidências
+
 **Estado:** **Validado de ponta a ponta**.
 
 ## Política e condições

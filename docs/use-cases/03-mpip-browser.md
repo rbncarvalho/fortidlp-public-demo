@@ -1,5 +1,50 @@
 # UC03 — Microsoft Purview / label no browser
 
+> **GUIÃO RÁPIDO:** preparação + fluxograma + resultado. [Setup completo](../setup/README.md) · [Checklist 5 min](../operations/preflight.md)
+
+## 0. Preparação rápida
+
+| Item | Verificar |
+|---|---|
+| Aplicações | Word com Sensitivity Labels e Edge |
+| Label / scope | Endpoint `dlp_rc_demos` |
+| Policy Enabled | `DEMO-03 | MPIP Confidential Protection` |
+
+- [ ] Label MPIP de laboratório publicada ao utilizador
+- [ ] Aplicar label ao DOCX no Word e guardar
+- [ ] Policy Sensitive file uploaded com filtro MPIP
+
+## 1. Fluxograma — executar pela ordem indicada
+
+```mermaid
+flowchart TD
+  A["Abrir DOCX"]
+  B["Aplicar label MPIP"]
+  C["Guardar ficheiro"]
+  D["Upload pelo browser"]
+  E["FortiDLP identifica label"]
+  F["Coaching ao utilizador"]
+  G["Validar Content Inspection"]
+  A --> B
+  B --> C
+  C --> D
+  D --> E
+  E --> F
+  F --> G
+```
+
+## 2. O que comprovar na consola
+
+Deteção e coaching validado. **Não** declarar bloqueio validado nesta UC.
+
+## 3. Plano B
+
+Mostrar Detection com a classificação reconhecida.
+
+---
+
+## Detalhe técnico e evidências
+
 **Estado:** **Parcial** (deteção e coaching).
 
 ## Política e condições

@@ -1,5 +1,50 @@
 # UC06 — Bloqueio de prompts GenAI Web
 
+> **GUIÃO RÁPIDO:** preparação + fluxograma + resultado. [Setup completo](../setup/README.md) · [Checklist 5 min](../operations/preflight.md)
+
+## 0. Preparação rápida
+
+| Item | Verificar |
+|---|---|
+| Aplicações | Edge + extensão FortiDLP + ChatGPT Web |
+| Label / scope | Endpoint `dlp_rc_demos` |
+| Policy Enabled | `DEMO-06 | GenAI Prompt Protection` |
+
+- [ ] Agent 12.8.1 / Policy Templates 8.7.0 (versões testadas)
+- [ ] Browser Monitoring e extensão Edge ON
+- [ ] Prompts neutro e PII sintética preparados
+
+## 1. Fluxograma — executar pela ordem indicada
+
+```mermaid
+flowchart TD
+  A["Abrir ChatGPT Web"]
+  B["Enviar prompt neutro"]
+  C["Inserir prompt com PII"]
+  D["Submeter prompt"]
+  E["Block browser request"]
+  F["Popup + input evidence"]
+  G["Validar ações Succeeded"]
+  A --> B
+  B --> C
+  C --> D
+  D --> E
+  E --> F
+  F --> G
+```
+
+## 2. O que comprovar na consola
+
+`Block browser request — Succeeded`; `Capture input evidence — Succeeded`. Screenshot `Not Found` e conta SaaS `unknown user`.
+
+## 3. Plano B
+
+Mostrar Detection já validada sem expor conteúdo pessoal no GitHub.
+
+---
+
+## Detalhe técnico e evidências
+
 **Estado:** **Validado** (ChatGPT Web).
 
 ## Política e condições

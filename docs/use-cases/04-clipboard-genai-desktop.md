@@ -1,5 +1,50 @@
 # UC04 — Clipboard para aplicações GenAI desktop
 
+> **GUIÃO RÁPIDO:** preparação + fluxograma + resultado. [Setup completo](../setup/README.md) · [Checklist 5 min](../operations/preflight.md)
+
+## 0. Preparação rápida
+
+| Item | Verificar |
+|---|---|
+| Aplicações | Word, Claude Desktop ou ChatGPT Desktop; VS Code opcional |
+| Label / scope | Endpoint `dlp_rc_demos` |
+| Policy Enabled | `DEMO-04B | Sensitive Data Pasted to GenAI` |
+
+- [ ] Texto fictício com PII portuguesa no Word
+- [ ] Clipboard Monitoring ON
+- [ ] App de destino aberta; regra antiga DEMO-04 desativada
+
+## 1. Fluxograma — executar pela ordem indicada
+
+```mermaid
+flowchart TD
+  A["Abrir texto PII no Word"]
+  B["Copiar texto"]
+  C["Abrir app GenAI desktop"]
+  D["Colar texto"]
+  E["FortiDLP deteta paste"]
+  F["Popup de coaching"]
+  G["Validar app e padrões"]
+  A --> B
+  B --> C
+  C --> D
+  D --> E
+  E --> F
+  F --> G
+```
+
+## 2. O que comprovar na consola
+
+Deteção do paste e destino; **sem bloqueio de colagem demonstrado**.
+
+## 3. Plano B
+
+Abrir Detection anterior de ChatGPT/Claude/VS Code.
+
+---
+
+## Detalhe técnico e evidências
+
 **Estado:** **Validado para deteção/coaching**.
 
 ## Política e condições

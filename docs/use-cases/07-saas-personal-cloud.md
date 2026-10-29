@@ -1,5 +1,48 @@
 # UC07 — Upload para SaaS pessoal
 
+> **GUIÃO RÁPIDO:** preparação + fluxograma + resultado. [Setup completo](../setup/README.md) · [Checklist 5 min](../operations/preflight.md)
+
+## 0. Preparação rápida
+
+| Item | Verificar |
+|---|---|
+| Aplicações | Edge/Chrome + Google Drive pessoal e sessão corporativa de teste |
+| Label / scope | Endpoint `dlp_rc_demos` |
+| Policy Enabled | `DEMO-07 | Personal Cloud Protection` |
+
+- [ ] Domínios de login corporativos configurados no FortiDLP
+- [ ] Contas pessoal/corporativa do **laboratório** separadas
+- [ ] Policy com SaaS App + account type Non-corporate
+
+## 1. Fluxograma — executar pela ordem indicada
+
+```mermaid
+flowchart TD
+  A["Entrar em conta cloud pessoal"]
+  B["Selecionar DOCX com PII"]
+  C["Tentar upload"]
+  D["FortiDLP avalia app + conta"]
+  E["Verificar policy que disparou"]
+  F["Confirmar account type e ação"]
+  A --> B
+  B --> C
+  C --> D
+  D --> E
+  E --> F
+```
+
+## 2. O que comprovar na consola
+
+**Pendente:** identidade Non-corporate e enforcement próprio da UC07 não foram confirmados. Não confundir deteções UC01/UC03.
+
+## 3. Plano B
+
+Explicar configurações e apresentar a limitação sem atribuir deteções de outra policy.
+
+---
+
+## Detalhe técnico e evidências
+
 **Estado:** **Pendente** (diferenciação de conta e enforcement não confirmados).
 
 ## Política e condições
