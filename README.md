@@ -24,6 +24,12 @@ Repositório de referência para reproduzir uma PoC técnica de FortiDLP num amb
 
 **Backlog:** Wireshark/packet capture (não validado), OCR FortiDLP (não confirmado), Agentic AI Inventory e inspeção MCP (não demonstrados).
 
+## Começar em 5 minutos
+
+**Setup obrigatório:** [Preparar a PoC](docs/setup/README.md) → [Instalação Windows](docs/setup/windows-11.md) → [Policy Group + labels/scope](docs/setup/policy-scope.md) → [Integrações Teams/M365](docs/setup/integrations.md) → [Preflight de 5 minutos](docs/operations/preflight.md).
+
+**Label `dlp_rc_demos` no endpoint E no utilizador**; Policy Group `PG-FortiDLP-Demo`. Em especial, a remediação OneDrive/Teams (UC08) requer **scope no utilizador**. Cada use case terá uma vista operacional com fluxograma, pré-requisitos e resultados.
+
 ## Navegação
 
 - [Arquitetura, versões e pré-requisitos](docs/architecture.md)
