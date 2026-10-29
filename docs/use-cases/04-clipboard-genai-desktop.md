@@ -37,6 +37,14 @@ flowchart TD
 
 Deteção do paste e destino; **sem bloqueio de colagem demonstrado**.
 
+## Ponte para a UC06 e UC09
+
+1. **UC04:** o paste em Claude Desktop é detetado e gera coaching; não foi bloqueado.
+2. **UC06:** no Edge, repetir os mesmos dados sintéticos em ChatGPT Web e demonstrar `Block browser request — Succeeded`.
+3. **UC09:** abrir ChatGPT Desktop e demonstrar `Kill process — Succeeded` após arranque limpo.
+
+**Não afirmar** que os três testes garantem bloqueio universal de todas as apps nativas; a ação UC09 foi testada especificamente em `ChatGPT.exe`.
+
 ## 3. Plano B
 
 Abrir Detection anterior de ChatGPT/Claude/VS Code.
