@@ -5,22 +5,30 @@
 **Linguagem:** portuguesa, com nomes de produtos e operações na designação original.  
 **Regra de ouro:** não executar funcionalidades não validadas como se estivessem garantidas.
 
-## Sequência principal (8 momentos)
+## Sequência recomendada — dry run das 11 policies
 
-| Momento | Duração | Use case | Interação visível |
-|---|---:|---|---|
-| Abertura | 2 min | Arquitetura | Endpoint + cloud connector |
-| 1 | 6 min | UC01 | OneDrive → rename → browser upload → override |
-| 2 | 3 min | UC02 | Screenshot + Empty Clipboard |
-| 3 | 4 min | UC05 | New Outlook: email externo bloqueado |
-| 4 | 5 min | UC06 | ChatGPT Web: prompt com PII bloqueado |
-| 5 | 3 min | UC09 | ChatGPT Desktop: Kill + popup |
-| 6 | 3 min | UC10 | Thunderbird: Kill + abrir Outlook nativo |
-| 7 | 7 min | UC08 | Partilha OneDrive → Teams → Reader |
-| 8 | 3 min | UC11 | Nmap: deteção comportamental + logs |
-| Encerramento | 4 min | Investigate | Evidências, Data Lineage, feedback e ações |
+Na apresentação, usar as cenas com melhor impacto e reduzir as opcionais conforme o tempo disponível. A **história GenAI é contínua: UC04 → UC06 → UC09**, sem trocar os dados de teste.
 
-UC03, UC04 e UC07 servem de módulos opcionais ou transições técnicas.
+| Ordem | Use case | Mensagem / ação |
+|---|---|---|
+| 1 | UC01 | OneDrive → rename → upload → override auditável |
+| 2 | UC02 | Screenshot → Empty Clipboard |
+| 3 | UC03 | MPIP label → deteção browser |
+| 4 | UC04 | PII → paste em Claude Desktop: **deteção, não bloqueio** |
+| 5 | UC06 | **A mesma PII** → ChatGPT Web: **Block browser request** |
+| 6 | UC09 | ChatGPT Desktop não autorizado: **Kill process** |
+| 7 | UC05 | New Outlook: bloqueio de email com PII |
+| 8 | UC10 | Thunderbird: Kill + abrir Outlook nativo |
+| 9 | UC08 | OneDrive: partilha externa → Teams → Reader |
+| 10 | UC11 | Nmap autorizado: deteção de recon mais intenso |
+
+**UC07:** utilizar como teste opcional/pendente de SaaS pessoal; não anunciar um bloqueio específico ainda não validado.
+
+### Discurso de transição GenAI
+
+> “Na aplicação nativa conseguimos identificar a tentativa de partilha e alertar, mas este controlo não bloqueia o conteúdo. Ao efetuar a mesma ação no browser, conseguimos impedir a submissão do prompt. E para reduzir a hipótese de contorno pelo cliente ChatGPT Desktop não autorizado, aplicamos Application Control e terminamos o processo.”
+
+**Nota:** os mecanismos são *channel-specific*. A demo comprova bloqueio do pedido ChatGPT **Web** e término da aplicação **ChatGPT Desktop**; não comprova o bloqueio de todas as aplicações GenAI nativas.
 
 ## Abertura
 
@@ -42,6 +50,7 @@ UC03, UC04 e UC07 servem de módulos opcionais ou transições técnicas.
 
 **Plano B:** deteção previamente gerada e print anonimizado da lineage.
 
+
 ## Cena 2 — Captura de ecrã (UC02)
 
 **Dizer:** “E quando alguém tenta contornar a transferência de ficheiro fazendo uma captura de ecrã?”
@@ -52,7 +61,53 @@ UC03, UC04 e UC07 servem de módulos opcionais ou transições técnicas.
 
 **Mensagem:** “Visibilidade sobre operações do utilizador, não apenas uploads.”
 
-## Cena 3 — Email não autorizado (UC05)
+
+## Cena 3 — Sensitivity Labels MPIP (UC03)
+
+**Preparação:** documento sintético com label de laboratório aplicada no Word e policy `DEMO-03` ativa.
+
+**Dizer:** “Além de padrões de dados pessoais, o endpoint reconhece classificações Microsoft Purview no documento.”
+
+**Ao vivo:** confirmar a label no Word → guardar e fechar → upload no Edge → abrir Detection e verificar o match da label.
+
+**Mensagem:** “Deteção e coaching confirmados; bloqueio do upload específico desta UC ainda não demonstrado.”
+
+
+## Cena 4 — GenAI Desktop: visibilidade sem bloqueio de paste (UC04)
+
+**Preparação:** texto PII sintético em Word; Claude Desktop aberto; policy `DEMO-04B` ativa.
+
+**Dizer:** “Ao colar informação sensível numa aplicação GenAI nativa, conseguimos detetar e alertar. Porém, este template não impede o envio do conteúdo. E se o colaborador fizer o mesmo no browser?”
+
+**Ao vivo:** copiar PII sintética de Word → colar em Claude Desktop **sem submeter** → confirmar popup e deteção da aplicação nativa.
+
+**Ponte:** “Vamos usar exatamente os mesmos dados no ChatGPT Web e verificar se conseguimos impedir o pedido.”
+
+
+## Cena 5 — Dados pessoais para GenAI Web (UC06)
+
+**Dizer:** “Vimos que no cliente nativo este template deteta mas não bloqueia o paste. No browser, com uma policy específica de GenAI, podemos impedir o envio do mesmo conteúdo.”
+
+**Ao vivo:** prompt neutro (passa) → prompt com telefones fictícios (bloqueado) → popup → deteção com `Capture input evidence`.
+
+**Mostrar SOC:** `Block browser request — Succeeded`, `Capture input evidence — Succeeded`.  
+**Não mostrar:** conteúdo original de evidência se incluir identidades ou dados reais.
+
+**Mensagem:** “`Block browser request — Succeeded` prova que este pedido Web foi impedido. Segue-se a demonstração de como podemos limitar o acesso pela app nativa.”
+
+
+## Cena 6 — Aplicação GenAI não autorizada (UC09)
+
+**Dizer:** “O canal Web pode estar protegido, mas a app desktop tem outra superfície de controlo. Quando a política não permite essa aplicação, podemos terminá-la.”
+
+**Ao vivo:** arranque **limpo** de ChatGPT Desktop; popup e término automático.
+
+**Mostrar SOC:** `Kill process — Succeeded`.
+
+**Mensagem:** “A prevenção de exfiltração aqui resulta da combinação dos controlos: pedido bloqueado no browser e ChatGPT Desktop não autorizado terminado no endpoint. Isto não significa cobertura universal de todas as apps GenAI (por exemplo, Claude Desktop apenas gerou deteção de paste neste laboratório).”
+
+
+## Cena 7 — Email não autorizado (UC05)
 
 **Dizer:** “Uma mensagem enviada pelo cliente corporativo pode conter dados pessoais ou estar classificada. O destino também importa.”
 
@@ -62,28 +117,8 @@ UC03, UC04 e UC07 servem de módulos opcionais ou transições técnicas.
 
 **Mensagem:** “Combinação de destinatário, conteúdo e classificação.”
 
-## Cena 4 — Dados pessoais para GenAI Web (UC06)
 
-**Dizer:** “E se o colaborador tentar enviar os mesmos dados diretamente num prompt?”
-
-**Ao vivo:** prompt neutro (passa) → prompt com telefones fictícios (bloqueado) → popup → deteção com `Capture input evidence`.
-
-**Mostrar SOC:** `Block browser request — Succeeded`, `Capture input evidence — Succeeded`.  
-**Não mostrar:** conteúdo original de evidência se incluir identidades ou dados reais.
-
-**Mensagem:** “O controlo atua na submissão do pedido Web, não só no clipboard.”
-
-## Cena 5 — Aplicação GenAI não autorizada (UC09)
-
-**Dizer:** “O canal Web pode estar protegido, mas a app desktop tem outra superfície de controlo. Quando a política não permite essa aplicação, podemos terminá-la.”
-
-**Ao vivo:** arranque **limpo** de ChatGPT Desktop; popup e término automático.
-
-**Mostrar SOC:** `Kill process — Succeeded`.
-
-**Mensagem:** “Controlar a utilização da app complementa a inspeção do conteúdo.”
-
-## Cena 6 — Cliente de email alternativo (UC10)
+## Cena 8 — Cliente de email alternativo (UC10)
 
 **Dizer:** “Não basta controlar mensagens no Outlook se o colaborador instalar um cliente de email fora dos mecanismos aprovados.”
 
@@ -91,7 +126,8 @@ UC03, UC04 e UC07 servem de módulos opcionais ou transições técnicas.
 
 **Mensagem:** “Prevenção com uma alternativa imediatamente acessível.”
 
-## Cena 7 — Partilha cloud e remediação no Teams (UC08)
+
+## Cena 9 — Partilha cloud e remediação no Teams (UC08)
 
 **Preparação crítica:** criar a partilha com **antecedência**, por causa da latência de ingestão (cerca de 3 minutos num teste). Confirmar que o utilizador recebeu a mensagem.
 
@@ -105,7 +141,8 @@ UC03, UC04 e UC07 servem de módulos opcionais ou transições técnicas.
 
 **Plano B:** detecção e Action Log já gerados, com prints devidamente anonimizados.
 
-## Cena 8 — Reconhecimento excessivo de rede (UC11)
+
+## Cena 10 — Reconhecimento excessivo de rede (UC11)
 
 **Dizer:** “Nem toda a utilização de ferramentas técnicas é maliciosa. A política permite identificar excesso de atividade, mas não contamos simplesmente quantas vezes alguém executou o Nmap.”
 
